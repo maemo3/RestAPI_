@@ -7,6 +7,7 @@ const mahasiswaController = require("../controllers/mahasiswaController");
 //endpoint mahasiswa
 router.get("/", mahasiswaController.viewMahasiswa);  // untuk view
 router.post('/', mahasiswaController.addMahasiswa);
+router.put('/', mahasiswaController.editMahasiswa);
 
 //export module
 module.exports = router;

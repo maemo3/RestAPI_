@@ -7,6 +7,8 @@ var logger = require('morgan');
 const flash = require('connect-flash');
 //import session
 const session = require('express-session');
+// import method override
+const  methodOverride = require('method-override');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -18,6 +20,8 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+// menggunakan method-override
+app.use(methodOverride("_method"));
 //menggunakan session
 app.use(session({ // Perbaikan: session, bukan sesion
   secret: 'keyboard cat',
