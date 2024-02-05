@@ -42,10 +42,20 @@ module.exports = {
       const collection = db.collection("mahasiswa");
 
       //membuat contanta nama,nim,jurusan,alamat
-      const { nama, nim, jurusan, alamat } = req.body;
+      const {
+        nama,
+        nim,
+        jurusan,
+        alamat
+      } = req.body;
 
       // Menambahkan data mahasiswa
-      await collection.insertOne({ nama, nim, jurusan, alamat });
+      await collection.insertOne({
+        nama,
+        nim,
+        jurusan,
+        alamat
+      });
 
       req.flash("alertMessage", "Data berhasil disimpan.");
       req.flash("alertStatus", "success");
@@ -69,21 +79,74 @@ module.exports = {
       const collection = db.collection("mahasiswa");
 
       // Membuat variabel yang menerima id, dan nama yang didapat dari req body atau yang di inputkan di form input
-      const { nim, nama, jurusan, alamat } = req.body;
+      const {
+        nim,
+        nama,
+        jurusan,
+        alamat
+      } = req.body;
 
       // Cari mahasiswa berdasarkan NIM
-      const mahasiswa = await collection.findOne({ nim: nim });
+      const mahasiswa = await collection.findOne({
+        nim: nim
+      });
 
       // Jika mahasiswa ditemukan, lakukan update
       if (mahasiswa) {
         // Update data mahasiswa
-        await collection.updateOne(
-          { nim: nim },
-          { $set: { nama, nim, jurusan, alamat } }
-        );
+        await collection.updateOne({
+          nim: nim
+        }, {
+          $set: {
+            nama,
+            nim,
+            jurusan,
+            alamat
+          }
+        });
 
         req.flash("alertMessage", "Data Berhasil Diubah!");
         req.flash("alertStatus", "success");
+      } else {
+        // Jika mahasiswa tidak ditemukan, berikan pesan kesalahan
+        req.flash("alertMessage", "Mahasiswa tidak ditemukan.");
+        req.flash("alertStatus", "danger");
+      }
+    } catch (error) {
+      // Jika terjadi kesalahan, berikan pesan kesalahan
+      req.flash("alertMessage", `${error.message}`);
+      req.flash("alertStatus", "danger");
+    } finally {
+      await client.close();
+      // Setelah selesai, redirect ke halaman mahasiswa
+      res.redirect("/mahasiswa");
+    }
+  },
+  //Menghapus Data Mahasiswa
+  deleteMahasiswa: async (req, res) => {
+    try {
+      await client.connect();
+
+      const db = client.db("db_mahasiswa");
+      const collection = db.collection("mahasiswa");
+
+      // Ambil nim dari parameter URL
+      const nim = req.params.nim;
+
+      // Cek data Mahasiswa yang akan dihapus berdasarkan nim
+      const mahasiswa = await collection.findOne({
+        nim: nim
+      });
+
+      // Jika mahasiswa ditemukan, lakukan penghapusan
+      if (mahasiswa) {
+        // Hapus data mahasiswa berdasarkan nim
+        await collection.deleteOne({
+          nim: nim
+        });
+
+        req.flash("alertMessage", "Data Mahasiswa berhasil dihapus");
+        req.flash("alertStatus", "warning");
       } else {
         // Jika mahasiswa tidak ditemukan, berikan pesan kesalahan
         req.flash("alertMessage", "Mahasiswa tidak ditemukan.");

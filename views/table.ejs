@@ -38,6 +38,7 @@
             <td><%= mahasiswa[i].jurusan %></td>
             <td><%= mahasiswa[i].alamat %></td>
             <td class="text-center">
+              <form action="/mahasiswa/<%= mahasiswa[i].nim %>?_method=DELETE" method="POST">
               <a
                 href="javascript:void()"
                 class="btn btn-outline-warning btn-sm button-update"
@@ -50,9 +51,14 @@
               >
                 Edit
               </a>
-              <button type="submit" class="btn btn-outline-danger btn-sm">
+              <button 
+              type="submit" 
+              class="btn btn-outline-danger btn-sm"
+              onclick="return confirm('Apa kamu yakin ingin menghapus data ini?');"
+              >
                 Delete
               </button>
+              </form>
             </td>
           </tr>
           <% } %>

@@ -5,9 +5,10 @@ const router = require("express").Router();
 const mahasiswaController = require("../controllers/mahasiswaController");
 
 //endpoint mahasiswa
-router.get("/", mahasiswaController.viewMahasiswa);  // untuk view
-router.post('/', mahasiswaController.addMahasiswa);
-router.put('/', mahasiswaController.editMahasiswa);
+router.get("/", mahasiswaController.viewMahasiswa);  // menampilkan data pada tabel
+router.post('/', mahasiswaController.addMahasiswa); // membuat data
+router.put('/', mahasiswaController.editMahasiswa); //mengupdate data berdasarkan nim
+router.delete('/:nim', mahasiswaController.deleteMahasiswa); //menghapus data berdasarkan nim
 
 //export module
 module.exports = router;
