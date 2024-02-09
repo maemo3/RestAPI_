@@ -37,7 +37,7 @@ module.exports = {
           properties: {
             message: {
               type: "string",
-              example: "Registrasi Berhasil",
+              example: "User Dibuat dengan ApiKeys :",
             },
           },
         },

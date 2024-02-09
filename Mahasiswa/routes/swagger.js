@@ -1,7 +1,10 @@
 const express = require("express");
 const SwaggerUi = require("swagger-ui-express");
+
+// Masukan Paths
 const registerUser = require("../swagger/paths/registerUser");
 const getUserInfo = require('../swagger/paths/getUserInfo');
+const getApiKeys = require("../swagger/paths/getApiKeys");
 
 const app = express();
 
@@ -23,6 +26,7 @@ const swaggerDocument = {
   paths: {
     "/users/register": registerUser,
     "/users/forgot": getUserInfo,
+    "/users/getApi": getApiKeys,
   },
 };
 
