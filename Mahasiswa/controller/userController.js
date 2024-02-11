@@ -8,17 +8,26 @@ module.exports = {
       await client.connect();
 
       const db = client.db("db_mahasiswa");
-      const collection = db.collection("user");
+      const userCollection = db.collection("user");
+      const profileCollection = db.collection("profile");
 
-      const { username, email, password } = req.body;
+      const { username, email, password, fullName, phoneNumber, address } = req.body;
 
       // Generate API keys
       const apiKey = crypto.randomBytes(8).toString("hex");
 
-      await collection.insertOne({
+      await userCollection.insertOne({
         username,
         email,
         password,
+        apiKey, // Add ApiKeys
+      });
+
+      await profileCollection.insertOne({
+        username,
+        fullName,
+        phoneNumber,
+        address,
         apiKey, // Add ApiKeys
       });
 
@@ -136,6 +145,62 @@ module.exports = {
       //menampilkan API
       const { apiKey } = api;
       res.send({ apiKey });
+    } catch (error) {
+      console.log(`${error.message}`);
+      res.status(500).send("Internal Server Error");
+    } finally {
+      await client.close();
+    }
+  },
+
+  getUserInfo: async (req, res) => {
+    try {
+      await client.connect();
+
+      const db = client.db("db_mahasiswa");
+      const collection = db.collection("user");
+
+      const { email } = req.query;
+
+      const user = await collection.findOne({ email });
+
+      if (!user) {
+        return res.status(404).send("User tidak ditemukan");
+      }
+
+      //Menampilkan hanya username dan password
+      const { username, password } = user;
+      res.send({ username, password });
+    } catch (error) {
+      console.log(`${error.message}`);
+      res.status(500).send("Internal Server Error");
+    } finally {
+      await client.close();
+    }
+  },
+
+  profileInfo: async (req, res) => {
+    try {
+      await client.connect();
+
+      const db = client.db("db_mahasiswa");
+      const collection = db.collection("profile");
+
+      const { apiKey } = req.query;
+
+      if (!apiKey) {
+        return res.status(400).send("Masukan API Key");
+      }
+
+      const user = await collection.findOne({ apiKey });
+
+      if (!user) {
+        return res.status(404).send("User tidak ditemukan");
+      }
+
+      //Menampilkan hanya username dan password
+      const { username, fullName, phoneNumber, address } = user;
+      res.send({ username, fullName, phoneNumber, address });
     } catch (error) {
       console.log(`${error.message}`);
       res.status(500).send("Internal Server Error");

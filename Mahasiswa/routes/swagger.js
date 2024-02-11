@@ -6,6 +6,7 @@ const registerUser = require("../swagger/paths/registerUser");
 const getUserInfo = require('../swagger/paths/getUserInfo');
 const getApiKeys = require("../swagger/paths/getApiKeys");
 const loginUser = require("../swagger/paths/loginUser");
+const profileInfo = require("../swagger/paths/profileUser");
 
 const app = express();
 
@@ -29,6 +30,7 @@ const swaggerDocument = {
     "/users/forgot": getUserInfo,
     "/users/getApi": getApiKeys,
     "/users/loginUser": loginUser,
+    "/users/profile": profileInfo,
   },
 };
 

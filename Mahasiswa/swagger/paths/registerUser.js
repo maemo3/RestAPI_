@@ -28,6 +28,27 @@ module.exports = {
         description: "Password Account of user",
         required: true,
       },
+      {
+        in: "formData",
+        name: "fullName",
+        type: "string",
+        description: "Full Name Account of user",
+        required: true,
+      },
+      {
+        in: "formData",
+        name: "phoneNumber",
+        type: "string",
+        description: "Phone Number Account of user",
+        required: true,
+      },
+      {
+        in: "formData",
+        name: "address",
+        type: "string",
+        description: "Address Account of user",
+        required: true,
+      },
     ],
     responses: {
       200: {
