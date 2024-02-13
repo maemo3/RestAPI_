@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const basicAuth = require('basic-auth');
 
 module.exports = {
-  registerUser: async (req, res) => {
+  registerAdmin: async (req, res) => {
     try {
       await client.connect();
 
@@ -21,7 +21,7 @@ module.exports = {
         email,
         password,
         apiKey, // Add ApiKeys
-        tipe_akun: 2
+        tipe_akun: 1
       });
 
       await profileCollection.insertOne({
@@ -42,7 +42,7 @@ module.exports = {
     }
   },
 
-  loginUser: async (req, res) => {
+  loginAdmin: async (req, res) => {
     try {
       await client.connect();
 
@@ -69,7 +69,7 @@ module.exports = {
     }
   },
 
-  loginUserAuth: async (req, res) => {
+  loginAdminAuth: async (req, res) => {
     try {
       const credentials = basicAuth(req);
 
@@ -102,7 +102,7 @@ module.exports = {
     }
   },
 
-  getUserInfo: async (req, res) => {
+  getAdminInfo: async (req, res) => {
     try {
       await client.connect();
 

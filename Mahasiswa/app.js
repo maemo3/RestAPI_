@@ -8,6 +8,8 @@ const bodyParser=require("body-parser");
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const swaggerRouter = require('./routes/swagger');
+const adminRouter = require('./routes/admin');
+const produkRouter = require('./routes/produk');
 
 var app = express();
 
@@ -26,6 +28,8 @@ app.use(bodyParser.json());
 
 app.use('/', indexRouter, swaggerRouter);
 app.use('/users', usersRouter);
+app.use('/admin', adminRouter);
+app.use('/produk', produkRouter);
 
 // // catch 404 and forward to error handler
 // app.use(function(req, res, next) {

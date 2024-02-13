@@ -8,20 +8,20 @@ const addProduk = async (req, res) => {
     const collection = db.collection("produk");
 
     const { nama, jumlah, harga } = req.body;
-    const { apiKey } = req.query;
+    const { tipe_akun } = req.query;
 
-    if (apiKey !== "14230c6702a848fc") {
+    if (tipe_akun !== "1") {
       return res.status(403).send({ message: "User Ditolak" });
     }
 
     const date = new Date();
-    const dateFormatted = date.toLocaleDateString();
+    const dateFormatted = date.toLocaleDateString('en-GB');
 
     await collection.insertOne({
       nama,
       jumlah,
       harga,
-      time: dateFormatted,
+      date: dateFormatted,
     });
 
     console.log("Data Ditambahkan");

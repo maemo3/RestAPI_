@@ -7,47 +7,33 @@ module.exports = {
       produces: ["application/json"],
       parameters: [
         {
-          in: "formData",
-          name: "username",
+          in: "query",
+          name: "apiKey",
           type: "string",
-          description: "Username of user",
+          description: "API Key yang dimiliki oleh user",
           required: true,
         },
         {
           in: "formData",
-          name: "email",
+          name: "nama",
           type: "string",
-          format: "email",
-          description: "Email Address of user",
+          description: "Nama produk yang akan ditambahkan",
           required: true,
         },
         {
           in: "formData",
-          name: "password",
+          name: "jumlah",
           type: "string",
-          description: "Password Account of user",
+          description: "Jumlah produk yang akan ditambahkan",
           required: true,
         },
         {
           in: "formData",
-          name: "fullName",
+          name: "harga",
           type: "string",
-          description: "Full Name Account of user",
+          description: "Harga produk yang akan ditambahkan",
           required: true,
-        },
-        {
-          in: "formData",
-          name: "phoneNumber",
-          type: "string",
-          description: "Phone Number Account of user",
-          required: true,
-        },
-        {
-          in: "formData",
-          name: "address",
-          type: "string",
-          description: "Address Account of user",
-          required: true,
+          default: "Rp",
         },
       ],
       responses: {
@@ -58,19 +44,19 @@ module.exports = {
             properties: {
               message: {
                 type: "string",
-                example: "User Dibuat dengan ApiKeys :",
+                example: "Produk berhasil ditambahkan",
               },
             },
           },
         },
-        400: {
+        403: {
           description: "Bad Request",
           schema: {
             type: "object",
             properties: {
               message: {
                 type: "string",
-                example: "Registrasi Gagal",
+                example: "User ditolak",
               },
             },
           },
