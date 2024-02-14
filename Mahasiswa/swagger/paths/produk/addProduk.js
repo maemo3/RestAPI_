@@ -49,14 +49,14 @@ module.exports = {
             },
           },
         },
-        403: {
+        401: {
           description: "Bad Request",
           schema: {
             type: "object",
             properties: {
               message: {
                 type: "string",
-                example: "User ditolak",
+                example: "Hanya admin yang dapat menambahkan produk",
               },
             },
           },

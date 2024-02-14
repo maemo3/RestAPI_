@@ -21,7 +21,7 @@ module.exports = {
         email,
         password,
         apiKey, // Add ApiKeys
-        tipe_akun: 2
+        tipe_akun: 2,
       });
 
       await profileCollection.insertOne({
@@ -30,6 +30,7 @@ module.exports = {
         phoneNumber,
         address,
         apiKey, // Add ApiKeys
+        akses: "user",
       });
 
       console.log("User dibuat");

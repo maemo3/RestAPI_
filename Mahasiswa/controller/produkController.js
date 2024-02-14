@@ -5,19 +5,32 @@ const addProduk = async (req, res) => {
     await client.connect();
 
     const db = client.db("db_mahasiswa");
-    const collection = db.collection("produk");
+    const produkCollection = db.collection("produk");
+    const profileCollection = db.collection("profile");
 
-    const { nama, jumlah, harga } = req.body;
-    const { tipe_akun } = req.query;
+    const { apiKey } = req.query;
 
-    if (tipe_akun !== "1") {
-      return res.status(403).send({ message: "User Ditolak" });
+    if (!apiKey) {
+      return res.status(400).send("Masukan API Key");
     }
 
+    const user = await profileCollection.findOne({ apiKey });
+
+    if (!user) {
+      return res.status(404).send("User tidak ditemukan");
+    }
+
+    const { akses } = user;
+    
+    if (akses !== "admin") {
+      return res.status(401).send("Hanya admin yang dapat menambahkan produk");
+    }
+
+    const { nama, jumlah, harga } = req.body;
     const date = new Date();
     const dateFormatted = date.toLocaleDateString('en-GB');
 
-    await collection.insertOne({
+    await produkCollection.insertOne({
       nama,
       jumlah,
       harga,
@@ -30,7 +43,7 @@ const addProduk = async (req, res) => {
     console.log(`${error.message}`);
     res.status(500).send("Internal Server Error");
   } finally {
-    await client.close;
+    await client.close();
   }
 };
 

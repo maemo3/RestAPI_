@@ -30,6 +30,7 @@ module.exports = {
         phoneNumber,
         address,
         apiKey, // Add ApiKeys
+        akses: "admin",
       });
 
       console.log("User dibuat");
