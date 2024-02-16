@@ -17,6 +17,7 @@ const profileAdmin = require("../swagger/paths/admin/profileAdmin");
 
 // Swagger Produk
 const addProduk = require("../swagger/paths/produk/addProduk");
+const sortHarga = require("../swagger/paths/produk/sortHarga");
 
 const app = express();
 
@@ -60,6 +61,7 @@ const swaggerDocument = {
 
     // Produk
     "/produk/addProduk": addProduk,
+    "/produk/sort/harga": sortHarga,
   },
 };
 

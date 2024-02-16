@@ -1,8 +1,8 @@
 module.exports = {
-  post: {
+  get: {
     tags: ["Produk"],
-    summary: "Menambahkan Produk",
-    description: "Menambahkan Produk dengan akses Admin",
+    summary: "Mencari Produk berdasarkan Harga",
+    description: "Mencari Produk dengan menggunakan harga",
     consumes: ["application/x-www-form-urlencoded"],
     produces: ["application/json"],
     parameters: [
@@ -14,37 +14,27 @@ module.exports = {
         required: true,
       },
       {
-        in: "formData",
-        name: "nama",
-        type: "string",
-        description: "Nama produk yang akan ditambahkan",
-        required: true,
-      },
-      {
-        in: "formData",
-        name: "jumlah",
-        type: "string",
-        description: "Jumlah produk yang akan ditambahkan",
-        required: true,
-      },
-      {
-        in: "formData",
+        in: "query",
         name: "harga",
         type: "string",
-        description: "Harga produk yang akan ditambahkan",
+        description: "Harga barang yang akan dicari",
         required: true,
         default: "Rp",
       },
     ],
     responses: {
       200: {
-        description: "Product add successfully",
+        description: "Price search successfully",
         schema: {
           type: "object",
           properties: {
-            message: {
+            nama: {
               type: "string",
-              example: "Produk berhasil ditambahkan",
+              example: "Taplak",
+            },
+            jumlah: {
+              type: "string",
+              example: "100",
             },
           },
         },
@@ -57,6 +47,18 @@ module.exports = {
             message: {
               type: "string",
               example: "Hanya admin yang dapat menambahkan produk",
+            },
+          },
+        },
+      },
+      404: {
+        description: "Not Found",
+        schema: {
+          type: "object",
+          properties: {
+            message: {
+              type: "string",
+              example: "Produk tidak ditemukan",
             },
           },
         },
