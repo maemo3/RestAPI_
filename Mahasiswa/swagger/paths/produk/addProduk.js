@@ -33,7 +33,6 @@ module.exports = {
         type: "string",
         description: "Harga produk yang akan ditambahkan",
         required: true,
-        default: "Rp",
       },
     ],
     responses: {

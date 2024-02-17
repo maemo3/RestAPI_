@@ -1,5 +1,47 @@
 var client = require("../library/database");
 
+// Fungsi untuk menentukan jenis barang berdasarkan nama
+const determineJenis = (nama) => {
+  // Daftar kata kunci untuk jenis furniture
+  const furnitureKeywords = ["meja", "kursi", "papan tulis", "lemari"];
+
+  // Daftar kata kunci untuk jenis elektronik
+  const elektronikKeywords = [
+    "keyboard",
+    "monitor",
+    "mouse",
+    "komputer",
+    "laptop",
+    "handphone",
+    "tablet",
+  ];
+
+  // Mengubah nama barang menjadi huruf kecil atau lowercase
+  const namaLowerCase = nama.toLowerCase();
+
+  // Memeriksa apakah ada kata kunci furniture dalam nama barang
+  if (
+    furnitureKeywords.some((keyword) => nama.toLowerCase().includes(keyword))
+  ) {
+    return "F"; // Mengembalikan kode "F" untuk furniture
+  }
+
+  // Memeriksa apakah ada kata kunci elektronik dalam nama barang
+  if (
+    elektronikKeywords.some((keyword) => nama.toLowerCase().includes(keyword))
+  ) {
+    return "E"; // Mengembalikan kode "E" untuk elektronik
+  }
+
+  // Jika tidak ada kata kunci yang cocok, mengembalikan null atau nilai default
+  return null;
+};
+
+// Fungsi untuk mengonversi harga menjadi format mata uang Rupiah
+const formatCurrency = (harga) => {
+  return new Int1.NumberFormat('id-ID', {  style: 'currency', currency: 'IDR' }).format(harga);
+};
+
 const addProduk = async (req, res) => {
   try {
     await client.connect();
@@ -26,7 +68,14 @@ const addProduk = async (req, res) => {
       return res.status(401).send("Hanya admin yang dapat menambahkan produk");
     }
 
-    const { nama, jumlah, harga } = req.body;
+    const { nama, jumlah, harga: hargaInput } = req.body;
+    const harga = parseFloat(hargaInput); // Mengonversi harga menjadi integer
+    const kode = determineJenis(nama); // Menentukan jenis barang berdasarkan nama
+
+    if (!kode) {
+      return res.status(400).send("Jenis barang tidak dapat ditentukan");
+    }
+
     const date = new Date();
     const dateFormatted = date.toLocaleDateString("en-GB");
 
@@ -34,6 +83,7 @@ const addProduk = async (req, res) => {
       nama,
       jumlah,
       harga,
+      kode,
       date: dateFormatted,
     });
 
@@ -73,7 +123,9 @@ const sortHarga = async (req, res) => {
       return res.status(401).send("Hanya admin yang dapat menambahkan produk");
     }
 
-    const { harga } = req.query;
+
+    const { harga: hargaInput } = req.query;
+    const harga = parseFloat(hargaInput); // Mengonversi harga menjadi integer
 
     const cari = await produkCollection.findOne({ harga });
 
