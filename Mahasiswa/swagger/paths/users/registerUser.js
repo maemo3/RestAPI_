@@ -25,6 +25,7 @@ module.exports = {
         in: "formData",
         name: "password",
         type: "string",
+        format: "password",
         description: "Password Account of user",
         required: true,
       },

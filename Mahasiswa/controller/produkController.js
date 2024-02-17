@@ -70,11 +70,17 @@ const addProduk = async (req, res) => {
 
     const { nama, jumlah, harga: hargaInput } = req.body;
     const harga = parseFloat(hargaInput); // Mengonversi harga menjadi integer
-    const kode = determineJenis(nama); // Menentukan jenis barang berdasarkan nama
+    const jenis = determineJenis(nama); // Menentukan jenis barang berdasarkan nama
 
-    if (!kode) {
+    if (!jenis) {
       return res.status(400).send("Jenis barang tidak dapat ditentukan");
     }
+
+    // Mencari jumlah produk yang telah ada dengan jenis yang sama
+    const existingProductCount = await produkCollection.countDocuments({ jenis });
+
+    // Membuat kode barang dengan format "jenis + nomor urut"
+    const kodeBarang = jenis + (existingProductCount + 1);
 
     const date = new Date();
     const dateFormatted = date.toLocaleDateString("en-GB");
@@ -83,7 +89,8 @@ const addProduk = async (req, res) => {
       nama,
       jumlah,
       harga,
-      kode,
+      jenis,
+      kodeBarang,
       date: dateFormatted,
     });
 

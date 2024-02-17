@@ -1,6 +1,9 @@
 var client = require("../library/database");
 const crypto = require("crypto");
 const basicAuth = require('basic-auth');
+const bcrypt = require('bcrypt');
+// Menentukan seberapa banyak putaran yang akan digunakan dalam proses enkripsi
+const saltRounds = 10;
 
 module.exports = {
   registerAdmin: async (req, res) => {
@@ -13,13 +16,16 @@ module.exports = {
 
       const { username, email, password, fullName, phoneNumber, address } = req.body;
 
+       // Enkripsi password menggunakan bcrypt
+       const hashedPassword = await bcrypt.hash(password, saltRounds);
+
       // Generate API keys
       const apiKey = crypto.randomBytes(8).toString("hex");
 
       await userCollection.insertOne({
         username,
         email,
-        password,
+        password: hashedPassword,
         apiKey, // Add ApiKeys
         tipe_akun: 1
       });

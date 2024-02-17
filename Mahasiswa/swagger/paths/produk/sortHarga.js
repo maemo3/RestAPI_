@@ -19,7 +19,6 @@ module.exports = {
         type: "string",
         description: "Harga barang yang akan dicari",
         required: true,
-        default: "Rp",
       },
     ],
     responses: {

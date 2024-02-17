@@ -18,6 +18,7 @@ module.exports = {
             in: "query",
             name: "password",
             type: "string",
+            format: "password",
             description: "Password yang dimiliki oleh user",
             required: true,
           },
