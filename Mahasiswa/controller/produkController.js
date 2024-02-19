@@ -150,7 +150,51 @@ const sortHarga = async (req, res) => {
   }
 };
 
+const sortTanggal = async ( req, res ) => {
+  try {
+    await client.connect();
+
+    const db = client.db("db_mahasiswa");
+    const produkCollection = db.collection("produk");
+    const profileCollection = db.collection("profile");
+
+    const { apiKey } = req.query;
+
+    if (!apiKey) {
+      return res.status(400).send("Masukan API Key");
+    }
+
+    const user = await profileCollection.findOne({ apiKey });
+
+    if (!user) {
+      return res.status(404).send("User tidak ditemukan");
+    }
+
+    const { akses } = user;
+
+    if (akses !== "admin") {
+      return res.status(401).send("Hanya admin yang dapat menambahkan produk");
+    }
+
+    const { date } = req.query;
+
+    const cari = await produkCollection.find({ date: { $eq: date } }).toArray();
+
+    if (!cari || cari.length === 0) {
+      return res.status(404).send("Produk tidak ditemukan");
+    }
+ 
+    res.send(cari);
+  } catch (error) {
+    console.log(`${error.message}`);
+    res.status(500).send("Internal Server Error");
+  } finally {
+    await client.close();
+  }
+};
+
 module.exports = {
   addProduk,
   sortHarga,
+  sortTanggal,
 };
