@@ -16,6 +16,9 @@ const determineJenis = (nama) => {
     "tablet",
   ];
 
+  const wordElektronik = ["elektronik"];
+  const wordFurniture = ["furniture"];
+
   // Mengubah nama barang menjadi huruf kecil atau lowercase
   const namaLowerCase = nama.toLowerCase();
 
@@ -33,13 +36,24 @@ const determineJenis = (nama) => {
     return "E"; // Mengembalikan kode "E" untuk elektronik
   }
 
+  if (wordElektronik.some((keyword) => nama.toLowerCase().includes(keyword))) {
+    return "E";
+  }
+
+  if (wordFurniture.some((keyword) => nama.toLowerCase().includes(keyword))) {
+    return "F";
+  }
+
   // Jika tidak ada kata kunci yang cocok, mengembalikan null atau nilai default
   return null;
 };
 
 // Fungsi untuk mengonversi harga menjadi format mata uang Rupiah
 const formatCurrency = (harga) => {
-  return new Int1.NumberFormat('id-ID', {  style: 'currency', currency: 'IDR' }).format(harga);
+  return new Int1.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(harga);
 };
 
 const addProduk = async (req, res) => {
@@ -77,7 +91,9 @@ const addProduk = async (req, res) => {
     }
 
     // Mencari jumlah produk yang telah ada dengan jenis yang sama
-    const existingProductCount = await produkCollection.countDocuments({ jenis });
+    const existingProductCount = await produkCollection.countDocuments({
+      jenis,
+    });
 
     // Membuat kode barang dengan format "jenis + nomor urut"
     const kodeBarang = jenis + (existingProductCount + 1);
@@ -130,7 +146,6 @@ const sortHarga = async (req, res) => {
       return res.status(401).send("Hanya admin yang dapat menambahkan produk");
     }
 
-
     const { harga: hargaInput } = req.query;
     const harga = parseFloat(hargaInput); // Mengonversi harga menjadi integer
 
@@ -150,7 +165,7 @@ const sortHarga = async (req, res) => {
   }
 };
 
-const sortTanggal = async ( req, res ) => {
+const sortTanggal = async (req, res) => {
   try {
     await client.connect();
 
@@ -183,7 +198,56 @@ const sortTanggal = async ( req, res ) => {
     if (!cari || cari.length === 0) {
       return res.status(404).send("Produk tidak ditemukan");
     }
- 
+
+    res.send(cari);
+  } catch (error) {
+    console.log(`${error.message}`);
+    res.status(500).send("Internal Server Error");
+  } finally {
+    await client.close();
+  }
+};
+
+const sortJenis = async (req, res) => {
+  try {
+    await client.connect();
+
+    const db = client.db("db_mahasiswa");
+    const produkCollection = db.collection("produk");
+    const profileCollection = db.collection("profile");
+
+    const { apiKey } = req.query;
+
+    if (!apiKey) {
+      return res.status(400).send("Masukan API Key");
+    }
+
+    const user = await profileCollection.findOne({ apiKey });
+
+    if (!user) {
+      return res.status(404).send("User tidak ditemukan");
+    }
+
+    const { akses } = user;
+
+    if (akses !== "admin") {
+      return res.status(401).send("Hanya admin yang dapat menambahkan produk");
+    }
+
+    const { jenis: jenisInput } = req.query;
+    const jenis = determineJenis(jenisInput);
+
+    if (!jenis) {
+      return res.status(400).send("Jenis barang tidak valid");
+    }
+
+    const cari = await produkCollection
+      .find({ jenis })
+      .toArray();
+
+    if (!cari || cari.length === 0) {
+      return res.status(404).send("Produk tidak ditemukan");
+    }
     res.send(cari);
   } catch (error) {
     console.log(`${error.message}`);
@@ -197,4 +261,5 @@ module.exports = {
   addProduk,
   sortHarga,
   sortTanggal,
+  sortJenis,
 };

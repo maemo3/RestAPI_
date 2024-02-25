@@ -1,7 +1,7 @@
 var client = require("../library/database");
 const crypto = require("crypto");
-const basicAuth = require('basic-auth');
-const bcrypt = require('bcrypt');
+const basicAuth = require("basic-auth");
+const bcrypt = require("bcrypt");
 // Menentukan seberapa banyak putaran yang akan digunakan dalam proses enkripsi
 const saltRounds = 10;
 
@@ -14,7 +14,8 @@ module.exports = {
       const userCollection = db.collection("user");
       const profileCollection = db.collection("profile");
 
-      const { username, email, password, fullName, phoneNumber, address } = req.body;
+      const { username, email, password, fullName, phoneNumber, address } =
+        req.body;
 
       // Enkripsi password menggunakan bcrypt
       const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -93,11 +94,12 @@ module.exports = {
       const { name: username, pass: password } = credentials;
 
       const user = await collection.findOne({
-        username, password
+        username,
+        password,
       });
-      
+
       if (!user) {
-        return res.status(401).send("Username atau password salah")
+        return res.status(401).send("Username atau password salah");
       }
 
       res.send("Selamat Datang");

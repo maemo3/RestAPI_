@@ -17,46 +17,46 @@ module.exports = {
       },
     ],
     responses: {
-        200: {
-          description: "User information retrieved successfully",
-          schema: {
-            type: "object",
-            properties: {
-              username: {
-                type: "string",
-                example: "john_doe",
-              },
-              password: {
-                type: "string",
-                example: "password123",
-              },
+      200: {
+        description: "User information retrieved successfully",
+        schema: {
+          type: "object",
+          properties: {
+            username: {
+              type: "string",
+              example: "john_doe",
             },
-          },
-        },
-        404: {
-          description: "User not found",
-          schema: {
-            type: "object",
-            properties: {
-              message: {
-                type: "string",
-                example: "User not found",
-              },
-            },
-          },
-        },
-        500: {
-          description: "Internal Server Error",
-          schema: {
-            type: "object",
-            properties: {
-              message: {
-                type: "string",
-                example: "Something went wrong, I can feel it",
-              },
+            password: {
+              type: "string",
+              example: "password123",
             },
           },
         },
       },
+      404: {
+        description: "User not found",
+        schema: {
+          type: "object",
+          properties: {
+            message: {
+              type: "string",
+              example: "User not found",
+            },
+          },
+        },
+      },
+      500: {
+        description: "Internal Server Error",
+        schema: {
+          type: "object",
+          properties: {
+            message: {
+              type: "string",
+              example: "Something went wrong, I can feel it",
+            },
+          },
+        },
+      },
+    },
   },
 };

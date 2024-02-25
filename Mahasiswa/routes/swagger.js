@@ -3,14 +3,14 @@ const SwaggerUi = require("swagger-ui-express");
 
 // Swagger User
 const registerUser = require("../swagger/paths/users/registerUser");
-const getUserInfo = require('../swagger/paths/users/getUserInfo');
+const getUserInfo = require("../swagger/paths/users/getUserInfo");
 const ApiUser = require("../swagger/paths/users/getApiKeys");
 const loginUser = require("../swagger/paths/users/loginUser");
 const profileUser = require("../swagger/paths/users/profileUser");
 
 // Swagger Admin
 const registerAdmin = require("../swagger/paths/admin/registerAdmin");
-const getAdminInfo = require('../swagger/paths/admin/getAdminInfo');
+const getAdminInfo = require("../swagger/paths/admin/getAdminInfo");
 const ApiAdmin = require("../swagger/paths/admin/getApiKeys");
 const loginAdmin = require("../swagger/paths/admin/loginAdmin");
 const profileAdmin = require("../swagger/paths/admin/profileAdmin");
@@ -19,6 +19,7 @@ const profileAdmin = require("../swagger/paths/admin/profileAdmin");
 const addProduk = require("../swagger/paths/produk/addProduk");
 const sortHarga = require("../swagger/paths/produk/sortHarga");
 const sortTanggal = require("../swagger/paths/produk/sortTanggal");
+const sortJenis = require("../swagger/paths/produk/sortJenis");
 
 const app = express();
 
@@ -64,6 +65,7 @@ const swaggerDocument = {
     "/produk/addProduk": addProduk,
     "/produk/sort/harga": sortHarga,
     "/produk/sort/date": sortTanggal,
+    "/produk/sort/jenis": sortJenis,
   },
 };
 
