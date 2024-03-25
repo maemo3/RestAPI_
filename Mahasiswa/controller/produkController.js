@@ -82,9 +82,10 @@ const addProduk = async (req, res) => {
       return res.status(401).send("Hanya admin yang dapat menambahkan produk");
     }
 
-    const { nama, jumlah, harga: hargaInput } = req.body;
+    const { nama, jumlah: jumlahInput, harga: hargaInput } = req.body;
     const harga = parseFloat(hargaInput); // Mengonversi harga menjadi integer
     const jenis = determineJenis(nama); // Menentukan jenis barang berdasarkan nama
+    const jumlah = parseInt(jumlahInput);
 
     if (!jenis) {
       return res.status(400).send("Jenis barang tidak dapat ditentukan");
@@ -241,9 +242,7 @@ const sortJenis = async (req, res) => {
       return res.status(400).send("Jenis barang tidak valid");
     }
 
-    const cari = await produkCollection
-      .find({ jenis })
-      .toArray();
+    const cari = await produkCollection.find({ jenis }).toArray();
 
     if (!cari || cari.length === 0) {
       return res.status(404).send("Produk tidak ditemukan");
@@ -257,9 +256,55 @@ const sortJenis = async (req, res) => {
   }
 };
 
+const sortJumlah = async (req, res) => {
+  try {
+    await client.connect();
+
+    const db = client.db("db_mahasiswa");
+    const produkCollection = db.collection("produk");
+    const profileCollection = db.collection("profile");
+
+    const { apiKey } = req.query;
+    let { jumlah } = req.query; // Mengambil nilai jumlah dari query
+
+    if (!apiKey || !jumlah) {
+      return res.status(400).send("Masukkan API Key dan jumlah");
+    }
+
+    const user = await profileCollection.findOne({ apiKey });
+
+    if (!user) {
+      return res.status(404).send("User tidak ditemukan");
+    }
+
+    // Konversi nilai jumlah menjadi integer
+    jumlah = parseInt(jumlah);
+
+    // Mencari produk dengan jumlah kurang dari atau sama dengan jumlah yang diberikan
+    const cari = await produkCollection
+      .find({ jumlah: { $lte: jumlah } }) // Menggunakan $lte untuk mencari jumlah yang kurang dari atau sama dengan jumlah yang diberikan
+      .sort({ jumlah: 1 }) // Mengurutkan berdasarkan jumlah
+      .toArray();
+
+    if (!cari || cari.length === 0) {
+      return res.status(404).send("Produk tidak ditemukan");
+    }
+
+    res.send(cari);
+
+  } catch (error) {
+    console.log(`${error.message}`);
+    res.status(500).send("Internal Server Error");
+  } finally {
+    await client.close();
+  }
+}
+
+
 module.exports = {
   addProduk,
   sortHarga,
   sortTanggal,
   sortJenis,
+  sortJumlah,
 };
