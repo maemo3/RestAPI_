@@ -52,64 +52,75 @@ module.exports = {
 
   loginUser: async (req, res) => {
     try {
-      await client.connect();
+        await client.connect();
 
-      const db = client.db("db_mahasiswa");
-      const collection = db.collection("user");
+        const db = client.db("db_mahasiswa");
+        const collection = db.collection("user");
 
-      const { username, email, password } = req.body;
+        const { username, email, password } = req.body;
 
-      const user = await collection.findOne({
-        $or: [{ username: username }, { email: email }],
-        password: password,
-      });
+        const user = await collection.findOne({
+            $or: [{ username: username }, { email: email }],
+        });
 
-      if (!user) {
-        return res.status(401).send("Username/Email atau password salah");
-      }
+        if (!user) {
+            return res.status(401).send("Username/Email atau password salah");
+        }
 
-      res.send("Selamat Datang");
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).send("Username/Email atau password salah");
+        }
+
+        res.send("Selamat Datang");
     } catch (error) {
-      console.log(`${error.message}`);
-      res.status(500).send("Internal Server Error");
+        console.log(`${error.message}`);
+        res.status(500).send("Internal Server Error");
     } finally {
-      await client.close();
+        await client.close();
     }
-  },
+},
 
-  loginUserAuth: async (req, res) => {
+loginUserAuth: async (req, res) => {
     try {
-      const credentials = basicAuth(req);
+        const credentials = basicAuth(req);
 
-      if (!credentials || !credentials.name || !credentials.pass) {
-        res.setHeader("WWW-Authenticate", 'Basic realm="example"');
-        return res.status(401).send("Akses Ditolak");
-      }
+        if (!credentials || !credentials.name || !credentials.pass) {
+            res.setHeader("WWW-Authenticate", 'Basic realm="example"');
+            return res.status(401).send("Akses Ditolak");
+        }
 
-      await client.connect();
+        await client.connect();
 
-      const db = client.db("db_mahasiswa");
-      const collection = db.collection("user");
+        const db = client.db("db_mahasiswa");
+        const collection = db.collection("user");
 
-      const { name: username, pass: password } = credentials;
+        const { name: username, pass: password } = credentials;
 
-      const user = await collection.findOne({
-        username,
-        password,
-      });
+        const user = await collection.findOne({
+            username,
+        });
 
-      if (!user) {
-        return res.status(401).send("Username atau password salah");
-      }
+        if (!user) {
+            return res.status(401).send("Username atau password salah");
+        }
 
-      res.send("Selamat Datang");
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).send("Username atau password salah");
+        }
+
+        res.send("Selamat Datang");
     } catch (error) {
-      console.log(`${error.message}`);
-      res.status(500).send("Internal Server Error");
+        console.log(`${error.message}`);
+        res.status(500).send("Internal Server Error");
     } finally {
-      await client.close();
+        await client.close();
     }
-  },
+},
+
 
   getApiKeys: async (req, res) => {
     try {
@@ -120,15 +131,26 @@ module.exports = {
 
       const { username, password } = req.query;
 
-      const api = await collection.findOne({ username, password });
+        if (!username || !password) {
+            return res.status(400).send("Masukkan nama pengguna dan kata sandi");
+        }
 
-      if (!api) {
-        return res.status(404).send("User tidak ditemukan");
-      }
+      const user = await collection.findOne({
+        username,
+    });
 
-      //menampilkan API
-      const { apiKey } = api;
-      res.send({ apiKey });
+    if (!user) {
+        return res.status(401).send("Username atau password salah");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+        return res.status(401).send("Username atau password salah");
+    }
+
+    // Jika autentikasi berhasil, kembalikan apiKey
+    res.send({ apiKey: user.apiKey });
     } catch (error) {
       console.log(`${error.message}`);
       res.status(500).send("Internal Server Error");
